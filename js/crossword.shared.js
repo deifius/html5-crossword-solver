@@ -5,12 +5,19 @@
 window.CrosswordShared = {
   getCrosswordParams() {
     const url = new URL(window.location.href);
+    const shareId = url.searchParams.get("id") || url.searchParams.get("inasra");
     const puzzle = url.searchParams.get("puzzle") || url.searchParams.get("file");
     const b64config = url.searchParams.get("config");
     const params = {};
     const lzpuz = window.location.hash.slice(1);
 
-    if (puzzle) {
+    if (shareId) {
+      params.puzzle_file = {
+        url: `/api/puzzle/${encodeURIComponent(shareId)}.ipuz`,
+        type: 'ipuz'
+      };
+      params.gray_completed_clues = true;
+    } else if (puzzle) {
       params.puzzle_file = {
         url: puzzle,
         type: puzzle.slice(puzzle.lastIndexOf('.') + 1)

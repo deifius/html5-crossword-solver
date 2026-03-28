@@ -113,3 +113,41 @@ The following parameters allow you to change the solver's color scheme.
 | `font_color_fill`| `string` | `'#000000'` | Font color for filled letters. |
 | `color_block` | `string` | `'#212121'` | Color of the black squares (blocked cells). |
 | `bar_linewidth` | `number`| `3.2` | Line width for cell borders (bars). |
+
+
+## INASRA sparse-puzzle bridge
+This repo now includes a lightweight Python/Flask bridge for serving INASRA-style sparse iPuz files through the solver.
+
+### What it adds
+- A minimal Flask server (`server.py`) that serves the solver UI and published puzzle URLs.
+- A Python adapter (`inasra_adapter.py`) that normalizes sparse INASRA iPuz exports by deriving explicit word locations and clue-cell mappings.
+- Tokenized share URLs like `/play/<token>` so published puzzles are easy to hand around without exposing a guessable sequential ID.
+- Direct solver support for `index.html?id=<token>` (or `?inasra=<token>`), which resolves to the Flask puzzle endpoint automatically.
+
+### Install
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-server.txt
+```
+
+### Run the server
+```bash
+python server.py serve --host 127.0.0.1 --port 5000
+```
+
+### Publish an INASRA puzzle
+```bash
+python server.py publish /path/to/puzzle.ipuz --base-url http://127.0.0.1:5000
+```
+
+That command will:
+1. copy the source file into `shared_puzzles/` as a raw backup,
+2. normalize it into a solver-friendly iPuz file,
+3. mint a random token, and
+4. print a play URL like `http://127.0.0.1:5000/play/<token>`.
+
+### Notes on sparse INASRA layouts
+The adapter is designed for puzzles whose grid is intentionally sparse or lightly annotated.
+When clue counts match the discovered across/down entries, it attaches explicit `cells` to each clue and preserves standard clue behavior.
+When clue counts do **not** match, it sets `fakeclues: true` and still provides explicit `words`, which lets the solver stay playable instead of failing on clue/word mismatches.
