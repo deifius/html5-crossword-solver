@@ -1,4 +1,151 @@
-# Crossword Nexus HTML5 Solver
+# INASRA Public Crossword Solver Fork
+
+This repository is being adapted from the Crossword Nexus HTML5 Solver into the public solving surface for INASRA-generated crosswords. The upstream solver remains the core crossword runtime; INASRA-specific work should layer on top through a small hosted-mode boot script, a theme stylesheet, and server-provided puzzle metadata.
+
+The intended public URL format is:
+
+```text
+https://inasra.me/<username>/solve/<public_puzzle_id>
+```
+
+Example:
+
+```text
+https://inasra.me/dafe/solve/xw_01jzn7w9k3p7m8q4v2fxh6n
+```
+
+The public puzzle ID must be opaque. It must not contain the seed, the title answer, 1-Across, or any answer-derived slug. Public URLs, page titles, filenames, Open Graph metadata, and dashboard listings should not spoil answers.
+
+## INASRA integration plan
+
+INASRA builds crosswords client-side in JavaScript. When a user clicks **Share Puzzle**, the browser will send a completed puzzle snapshot to the INASRA server. The server will validate and store the puzzle, assign an opaque public ID, and return a stable solve URL.
+
+The planned flow is:
+
+```text
+INASRA builder
+  -> POST /api/puzzles
+  -> server stores IPUZ + metadata + wallpaper manifest
+  -> server returns /<username>/solve/<public_id>
+  -> public solver page injects window.INASRA_SOLVE
+  -> solver loads /api/puzzles/<username>/<public_id>.ipuz
+```
+
+The public solve page should inject configuration like:
+
+```js
+window.INASRA_SOLVE = {
+  username: "dafe",
+  puzzleId: "xw_01jzn7w9k3p7m8q4v2fxh6n",
+  puzzleUrl: "/api/puzzles/dafe/xw_01jzn7w9k3p7m8q4v2fxh6n.ipuz",
+  manifestUrl: "/api/puzzles/dafe/xw_01jzn7w9k3p7m8q4v2fxh6n",
+  theme: "inasra"
+};
+```
+
+The solver should prefer this config when present, while preserving existing `?file=...`, hash/share, and direct JavaScript initialization modes.
+
+## Planned server responsibilities
+
+The main INASRA app, not this static solver alone, should own publication and management:
+
+```text
+POST /api/puzzles
+GET  /<username>/solve/<public_id>
+GET  /api/puzzles/<username>/<public_id>
+GET  /api/puzzles/<username>/<public_id>.ipuz
+GET  /dashboard/puzzles
+PATCH/DELETE puzzle management routes
+```
+
+A published puzzle should be stored as a snapshot with revision support:
+
+```text
+puzzles
+- id
+- owner_user_id
+- public_id
+- public_title
+- visibility
+- current_revision_id
+- created_at
+- updated_at
+- published_at
+
+puzzle_revisions
+- id
+- puzzle_id
+- revision_number
+- ipuz_json
+- inasra_metadata_json
+- wallpaper_manifest_json
+- created_at
+```
+
+Recommended visibility values are:
+
+```text
+private
+unlisted
+public
+archived
+```
+
+## Published crossword management
+
+Logged-in users need a dashboard for their published crosswords. The first useful version should support:
+
+- list published and draft puzzles
+- copy solve URL
+- open solver preview
+- download IPUZ
+- change visibility
+- unpublish/archive/delete
+- later: replace published version through a new revision
+
+The stable solve URL should survive revisions. Internally, the `puzzles` row should point at a current revision.
+
+## Ken Burns wallpaper on the solver side
+
+The solver should support an INASRA wallpaper layer behind the crossword UI. This layer should be read-only and driven by a server-provided wallpaper manifest.
+
+Suggested manifest shape:
+
+```json
+{
+  "mode": "kenburns",
+  "settings": {
+    "enabled": true,
+    "opacity": 0.32,
+    "transition_seconds": 8,
+    "hold_seconds": 12,
+    "motion": "gentle",
+    "fit": "cover"
+  },
+  "images": [
+    {
+      "src": "https://example.com/image.webp",
+      "thumb": "https://example.com/thumb.webp",
+      "alt": "Non-spoiler image description",
+      "source_url": "https://example.com/source",
+      "license": "unknown"
+    }
+  ]
+}
+```
+
+The wallpaper layer should respect `prefers-reduced-motion`. If reduced motion is enabled, avoid pan/zoom movement and use a static image or gentle crossfade.
+
+## Development guides
+
+- See [`agent.md`](agent.md) for INASRA development conventions and architectural guardrails.
+- See [`TODO.md`](TODO.md) for a low-story-point implementation checklist.
+
+---
+
+## Upstream solver documentation
+
+### Crossword Nexus HTML5 Solver
 An HTML5 crossword solver that can handle multiple puzzle formats (JPZ, PUZ, iPuz, etc.) in a browser. This solver is designed to be easily embedded into any website.
 
 ## Dependencies
@@ -113,41 +260,3 @@ The following parameters allow you to change the solver's color scheme.
 | `font_color_fill`| `string` | `'#000000'` | Font color for filled letters. |
 | `color_block` | `string` | `'#212121'` | Color of the black squares (blocked cells). |
 | `bar_linewidth` | `number`| `3.2` | Line width for cell borders (bars). |
-
-
-## INASRA sparse-puzzle bridge
-This repo now includes a lightweight Python/Flask bridge for serving INASRA-style sparse iPuz files through the solver.
-
-### What it adds
-- A minimal Flask server (`server.py`) that serves the solver UI and published puzzle URLs.
-- A Python adapter (`inasra_adapter.py`) that normalizes sparse INASRA iPuz exports by deriving explicit word locations and clue-cell mappings.
-- Tokenized share URLs like `/play/<token>` so published puzzles are easy to hand around without exposing a guessable sequential ID.
-- Direct solver support for `index.html?id=<token>` (or `?inasra=<token>`), which resolves to the Flask puzzle endpoint automatically.
-
-### Install
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-server.txt
-```
-
-### Run the server
-```bash
-python server.py serve --host 127.0.0.1 --port 5000
-```
-
-### Publish an INASRA puzzle
-```bash
-python server.py publish /path/to/puzzle.ipuz --base-url http://127.0.0.1:5000
-```
-
-That command will:
-1. copy the source file into `shared_puzzles/` as a raw backup,
-2. normalize it into a solver-friendly iPuz file,
-3. mint a random token, and
-4. print a play URL like `http://127.0.0.1:5000/play/<token>`.
-
-### Notes on sparse INASRA layouts
-The adapter is designed for puzzles whose grid is intentionally sparse or lightly annotated.
-When clue counts match the discovered across/down entries, it attaches explicit `cells` to each clue and preserves standard clue behavior.
-When clue counts do **not** match, it sets `fakeclues: true` and still provides explicit `words`, which lets the solver stay playable instead of failing on clue/word mismatches.
