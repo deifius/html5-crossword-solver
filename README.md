@@ -45,6 +45,32 @@ window.INASRA_SOLVE = {
 
 The solver should prefer this config when present, while preserving existing `?file=...`, hash/share, and direct JavaScript initialization modes.
 
+
+## Hosted solver foundation now in this fork
+
+This fork now includes the first solver-side INASRA slice:
+
+- `js/inasra-solver-boot.js` watches for `window.INASRA_SOLVE`, marks the page as INASRA-hosted, fills the branded top bar, loads a puzzle manifest, and initializes wallpaper.
+- `js/inasra-wallpaper.js` renders a read-only Ken Burns wallpaper layer behind the crossword UI. It is safe when no manifest/images are present and respects `prefers-reduced-motion`.
+- `css/inasra-solver.css` applies the guarded INASRA theme only when `.inasra-hosted` is present. The upstream standalone look remains intact without `window.INASRA_SOLVE`.
+- `CrosswordShared.getCrosswordParams()` now prefers `window.INASRA_SOLVE.puzzleUrl` before `?file=...` or hash/share loading.
+- Local solve progress can be keyed by the opaque public puzzle ID via `savegame_id`, avoiding hash churn across harmless metadata changes.
+- Service worker registration is skipped in hosted mode to avoid stale solver/puzzle assets during INASRA development.
+
+For a local smoke test, serve the repo and open:
+
+```text
+http://localhost:8000/inasra-example.html
+```
+
+For example:
+
+```bash
+python3 -m http.server 8000
+```
+
+The example page uses `sample_puzzles/Route_66.ipuz` and `sample_puzzles/inasra-example-manifest.json`.
+
 ## Planned server responsibilities
 
 The main INASRA app, not this static solver alone, should own publication and management:

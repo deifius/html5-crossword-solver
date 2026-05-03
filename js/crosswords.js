@@ -68,6 +68,7 @@ const IS_MOBILE = CrosswordShared.isMobileDevice();
       gray_completed_clues: false,
       min_sidebar_clue_width: 220,
       save_game_limit: 10,
+      savegame_id: null,
       notepad_name: 'Notes',
     };
 
@@ -888,7 +889,10 @@ const IS_MOBILE = CrosswordShared.isMobileDevice();
           return new Uint32Array([e])[0].toString(36)
         };
         const myHash = simpleHash(JSON.stringify(puzzle));
-        this.savegame_name = STORAGE_KEY + '_' + myHash;
+        const configuredSaveId = typeof this.config.savegame_id === 'string' ?
+          this.config.savegame_id.trim().replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 160) :
+          '';
+        this.savegame_name = STORAGE_KEY + '_' + (configuredSaveId || myHash);
         localStorage.setItem(this.savegame_name + "_lastmodified", Date.now());
         this.cleanupSaves();
 

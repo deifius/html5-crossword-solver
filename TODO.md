@@ -7,9 +7,9 @@ This TODO breaks the larger INASRA publishing and public-solving effort into sma
 - [x] Add `AGENT.md` describing INASRA solver development conventions.
 - [x] Update `README.md` with the intended INASRA publishing architecture.
 - [x] Add this TODO checklist.
-- [ ] Identify every place where `sw.js` is registered.
-- [ ] Document current solver loading modes: `?file=...`, URL hash, direct JS init.
-- [ ] Add a simple sample INASRA config object to documentation.
+- [x] Identify every place where `sw.js` is registered.
+- [x] Document current solver loading modes: `?file=...`, URL hash, direct JS init.
+- [x] Add a simple sample INASRA config object to documentation.
 
 ## Milestone 1 — Opaque public puzzle IDs
 
@@ -63,35 +63,44 @@ This TODO breaks the larger INASRA publishing and public-solving effort into sma
 
 ## Milestone 6 — Solver boot support
 
-- [ ] Add `js/inasra-solver-boot.js`.
-- [ ] Teach the solver to prefer `window.INASRA_SOLVE.puzzleUrl` when present.
-- [ ] Preserve existing `?file=...` loading behavior.
-- [ ] Preserve existing hash/share loading behavior.
-- [ ] Key local solve progress by `public_id` when available.
-- [ ] Add a tiny sample hosted-mode HTML page for local testing.
-- [ ] Manually smoke test with a sample `.ipuz` file.
+- [x] Add `js/inasra-solver-boot.js`.
+- [x] Teach the solver to prefer `window.INASRA_SOLVE.puzzleUrl` when present.
+- [x] Preserve existing `?file=...` loading behavior.
+- [x] Preserve existing hash/share loading behavior.
+- [x] Key local solve progress by `public_id` when available.
+- [x] Add a tiny sample hosted-mode HTML page for local testing.
+- [ ] Manually smoke test with a sample `.ipuz` file in a browser.
 
 ## Milestone 7 — INASRA visual theme
 
-- [ ] Add `css/inasra-solver.css`.
-- [ ] Load INASRA CSS after upstream solver CSS in hosted mode.
-- [ ] Add a top bar with INASRA branding, public puzzle title, author, and Create link.
-- [ ] Theme background, panels, clue areas, buttons, and active cells.
-- [ ] Keep grid and clue text legible over dark backgrounds.
-- [ ] Verify keyboard focus states remain visible.
-- [ ] Check mobile layout.
+- [x] Add `css/inasra-solver.css`.
+- [x] Load INASRA CSS after upstream solver CSS in hosted mode.
+- [x] Add a top bar with INASRA branding, public puzzle title, author, and Create link.
+- [x] Theme background, panels, clue areas, buttons, and active cells.
+- [x] Keep grid and clue text legible over dark backgrounds.
+- [x] Verify keyboard focus states remain visible.
+- [ ] Check mobile layout in a browser/device after merge.
 
 ## Milestone 8 — Ken Burns wallpaper on solver side
 
-- [ ] Add `#inasra-wallpaper-layer` behind the solver UI.
-- [ ] Add `js/inasra-wallpaper.js`.
-- [ ] Load wallpaper manifest from `window.INASRA_SOLVE.manifestUrl`.
-- [ ] Support empty/missing wallpaper manifests gracefully.
-- [ ] Preload the next image before crossfade.
-- [ ] Add pan/zoom animation with opacity controls.
-- [ ] Respect `prefers-reduced-motion` by disabling pan/zoom.
+- [x] Add `#inasra-wallpaper-layer` behind the solver UI.
+- [x] Add `js/inasra-wallpaper.js`.
+- [x] Load wallpaper manifest from `window.INASRA_SOLVE.manifestUrl`.
+- [x] Support empty/missing wallpaper manifests gracefully.
+- [x] Preload the next image before crossfade.
+- [x] Add pan/zoom animation with opacity controls.
+- [x] Respect `prefers-reduced-motion` by disabling pan/zoom.
 - [ ] Add a visible/off toggle if needed for readability.
-- [ ] Confirm the puzzle remains playable without wallpaper.
+- [x] Confirm the puzzle remains playable without wallpaper by making wallpaper optional/no-op when missing.
+
+
+## Milestone 6.5 — First solver-side bite follow-up
+
+- [ ] Open `inasra-example.html` through a local static server and visually inspect desktop behavior.
+- [ ] Open `inasra-example.html` on a narrow/mobile viewport and inspect layout.
+- [ ] Decide whether the INASRA top bar should be present on embedded iframe solves or only full-page solves.
+- [ ] Decide whether the hosted solver should keep the upstream app manifest/PWA behavior disabled permanently.
+- [ ] Replace remote sample wallpaper URLs with server-cached images when the backend media cache exists.
 
 ## Milestone 9 — Share button in INASRA builder
 

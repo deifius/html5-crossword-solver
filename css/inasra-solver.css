@@ -1,0 +1,256 @@
+/**
+ * INASRA hosted solver theme.
+ *
+ * These selectors are intentionally guarded by .inasra-hosted so the upstream
+ * Crossword Nexus standalone mode keeps its original look and behavior.
+ */
+html.inasra-hosted,
+body.inasra-hosted {
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+body.inasra-hosted {
+  --inasra-topbar-height: 64px;
+  --main-bg-color: rgba(8, 10, 22, 0.78);
+  --header-bg-color: rgba(19, 17, 38, 0.92);
+  --content-bg-color: rgba(9, 11, 25, 0.62);
+  --content-bg-gradient: linear-gradient(135deg, rgba(12, 16, 36, 0.74), rgba(26, 18, 46, 0.62));
+  --button-bg-color: rgba(56, 44, 90, 0.92);
+  --button-text-color: #f5e9c8;
+  --button-hover-color: rgba(92, 74, 137, 0.96);
+  --button-hover-text-color: #fff8dc;
+  --button-menu-bg-color: rgba(14, 13, 28, 0.98);
+  --top-text-wrapper-bg-color: rgba(21, 18, 39, 0.86);
+  --top-text-wrapper-text-color: #f8efd0;
+  --clues-holder-bg-color: rgba(13, 16, 35, 0.86);
+  --clue-active-color: rgba(218, 177, 77, 0.94);
+  --clue-active-text-color: #120d1e;
+  --clue-passive-color: rgba(42, 38, 68, 0.76);
+  --clue-passive-text-color: #eee5ca;
+  --clue-hover-color: rgba(61, 50, 91, 0.88);
+  --cluenote-text-color: #eee5ca;
+  --cluenote-hilite-color: #c9973f;
+  --clue-scrollbar-color-track: rgba(9, 11, 25, 0.64);
+  --clue-scrollbar-color-thumb: #c9973f;
+  --clue-scrollbar-color-thumb-hover: #e8c66d;
+  --main-text-color: #f4ecd5;
+  --copyright-text-color: #bfb293;
+  --grid-selected-square-color: #c9973f;
+  --grid-selected-square-text-color: #160e21;
+  --grid-selected-word-color: rgba(108, 207, 201, 0.86);
+  --grid-selected-word-text-color: #051318;
+  --grid-block-color: #080711;
+  --grid-none-color: #fbf5df;
+  --grid-none-text-color: #120d1e;
+  --grid-hilite-color: #ead282;
+  --grid-hilite-text-color: #160e21;
+  --grid-stroke-color: rgba(10, 8, 18, 0.95);
+  --grid-selected-stroke-color: #f2d989;
+  --grid-number-color: #3d325e;
+  --grid-letter-color: #120d1e;
+  --modal-header-bg-color: rgba(37, 31, 61, 0.98);
+  --modal-header-text-color: #f7ecd0;
+  --modal-content-bg-color: rgba(15, 14, 30, 0.98);
+  --modal-text-color: #f7ecd0;
+  --keyboard-bg-color: rgba(8, 10, 22, 0.96);
+  --keyboard-button-bg-color: rgba(56, 44, 90, 0.92);
+  --keyboard-button-text-color: #f5e9c8;
+  --timer-running-bgcolor: #4abf9e;
+  --timer-paused-bgcolor: #d7a846;
+  --main-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), 0 0 22px rgba(108, 207, 201, 0.10);
+  --border-color: rgba(234, 210, 130, 0.18);
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 5%, rgba(108, 207, 201, 0.16), transparent 34%),
+    radial-gradient(circle at 80% 0%, rgba(201, 151, 63, 0.14), transparent 30%),
+    #050711;
+  color: var(--main-text-color);
+}
+
+#inasra-wallpaper-layer {
+  display: none;
+}
+
+body.inasra-hosted #inasra-wallpaper-layer {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #050711;
+}
+
+body.inasra-hosted #inasra-wallpaper-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 7, 17, 0.40), rgba(5, 7, 17, 0.82)),
+    radial-gradient(circle at 50% 35%, transparent 0, rgba(5, 7, 17, 0.42) 62%, rgba(5, 7, 17, 0.86) 100%);
+}
+
+body.inasra-hosted #inasra-wallpaper-layer.is-disabled {
+  background:
+    radial-gradient(circle at 25% 10%, rgba(108, 207, 201, 0.14), transparent 30%),
+    radial-gradient(circle at 75% 0%, rgba(201, 151, 63, 0.10), transparent 32%),
+    #050711;
+}
+
+.inasra-wallpaper-slide {
+  position: absolute;
+  inset: -7%;
+  opacity: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(0.84) contrast(0.92) brightness(0.72);
+  transform: scale(1.02);
+  transition-property: opacity, transform;
+  transition-timing-function: ease-in-out;
+  will-change: opacity, transform;
+}
+
+.inasra-wallpaper-slide.is-active {
+  opacity: var(--inasra-wallpaper-opacity, 0.32);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inasra-wallpaper-slide {
+    transition-property: opacity;
+    transform: scale(1.02) !important;
+  }
+}
+
+.inasra-solve-topbar {
+  display: none;
+}
+
+body.inasra-hosted .inasra-solve-topbar {
+  align-items: center;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(90deg, rgba(8, 10, 22, 0.92), rgba(26, 18, 46, 0.84));
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.34);
+  box-sizing: border-box;
+  color: #f8efd0;
+  display: flex;
+  gap: 18px;
+  height: var(--inasra-topbar-height);
+  justify-content: space-between;
+  left: 0;
+  padding: 0 22px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 5;
+}
+
+body.inasra-hosted .inasra-brand,
+body.inasra-hosted .inasra-create-link {
+  color: #f1d783;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+body.inasra-hosted .inasra-brand {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+body.inasra-hosted .inasra-create-link {
+  border: 1px solid rgba(241, 215, 131, 0.46);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  padding: 8px 12px;
+}
+
+body.inasra-hosted .inasra-create-link:hover,
+body.inasra-hosted .inasra-create-link:focus-visible {
+  background: rgba(241, 215, 131, 0.12);
+  outline: none;
+}
+
+body.inasra-hosted .inasra-puzzle-meta {
+  align-items: baseline;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 10px;
+  min-width: 0;
+}
+
+body.inasra-hosted #inasra-puzzle-title {
+  font-size: 1rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.inasra-hosted #inasra-puzzle-author {
+  color: #bdb2d9;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+body.inasra-hosted div.crossword {
+  bottom: 0;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: var(--inasra-topbar-height);
+  width: auto;
+  z-index: 2;
+}
+
+body.inasra-hosted .cw-main {
+  backdrop-filter: blur(2px);
+}
+
+body.inasra-hosted .cw-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+body.inasra-hosted .cw-clues-holder,
+body.inasra-hosted .cw-top-text-wrapper,
+body.inasra-hosted .cw-buttons-holder,
+body.inasra-hosted .cw-mobile-clues-holder {
+  border: 1px solid var(--border-color);
+}
+
+body.inasra-hosted #cw-puzzle-grid {
+  box-shadow: var(--main-shadow);
+}
+
+body.inasra-hosted button,
+body.inasra-hosted .cw-button {
+  border-radius: 999px;
+}
+
+body.inasra-hosted :focus-visible {
+  outline: 2px solid #6ccfc9;
+  outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  body.inasra-hosted {
+    --inasra-topbar-height: 56px;
+  }
+
+  body.inasra-hosted .inasra-solve-topbar {
+    gap: 10px;
+    padding: 0 12px;
+  }
+
+  body.inasra-hosted .inasra-create-link {
+    display: none;
+  }
+
+  body.inasra-hosted #inasra-puzzle-author {
+    display: none;
+  }
+}
