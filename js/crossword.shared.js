@@ -3,17 +3,64 @@
  * Namespace: CrosswordShared
  */
 window.CrosswordShared = {
+  getInasraSolveConfig() {
+    const config = window.INASRA_SOLVE;
+    if (!config || typeof config !== "object") {
+      return null;
+    }
+    return config;
+  },
+
+  isInasraHostedMode() {
+    return Boolean(this.getInasraSolveConfig());
+  },
+
+  inferPuzzleType(url, fallback = "ipuz") {
+    if (!url || typeof url !== "string") {
+      return fallback;
+    }
+
+    const cleanUrl = url.split("?")[0].split("#")[0];
+    const ext = cleanUrl.includes(".") ? cleanUrl.slice(cleanUrl.lastIndexOf(".") + 1) : "";
+    return ext || fallback;
+  },
+
+  safeStorageId(raw) {
+    if (!raw || typeof raw !== "string") {
+      return null;
+    }
+
+    const cleaned = raw.trim().replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 160);
+    return cleaned || null;
+  },
+
   getCrosswordParams() {
     const url = new URL(window.location.href);
     const puzzle = url.searchParams.get("puzzle") || url.searchParams.get("file");
     const b64config = url.searchParams.get("config");
     const params = {};
     const lzpuz = window.location.hash.slice(1);
+    const inasraConfig = this.getInasraSolveConfig();
 
-    if (puzzle) {
+    if (inasraConfig?.puzzleUrl) {
+      params.puzzle_file = {
+        url: inasraConfig.puzzleUrl,
+        type: inasraConfig.puzzleType || inasraConfig.type || this.inferPuzzleType(inasraConfig.puzzleUrl, "ipuz")
+      };
+
+      const publicId = inasraConfig.puzzleId || inasraConfig.publicId;
+      const safeSaveId = this.safeStorageId(publicId);
+      if (safeSaveId) {
+        params.savegame_id = `inasra_${safeSaveId}`;
+      }
+
+      if (inasraConfig.solverParams && typeof inasraConfig.solverParams === "object") {
+        Object.assign(params, inasraConfig.solverParams);
+      }
+    } else if (puzzle) {
       params.puzzle_file = {
         url: puzzle,
-        type: puzzle.slice(puzzle.lastIndexOf('.') + 1)
+        type: this.inferPuzzleType(puzzle)
       };
     } else if (lzpuz) {
       try {

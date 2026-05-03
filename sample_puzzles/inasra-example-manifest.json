@@ -1,0 +1,30 @@
+{
+  "public_id": "xw_example_nonspoiler_001",
+  "public_title": "Sample INASRA Hosted Puzzle",
+  "author": "INASRA",
+  "wallpaper_manifest": {
+    "mode": "kenburns",
+    "settings": {
+      "enabled": true,
+      "opacity": 0.28,
+      "transition_seconds": 5,
+      "hold_seconds": 8,
+      "pan_strength": 0.10,
+      "fit": "cover"
+    },
+    "images": [
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg/1280px-Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg",
+        "alt": "A non-spoiler deep-space wallpaper image",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg",
+        "license": "public domain"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/NGC_4414_%28NASA-med%29.jpg/1280px-NGC_4414_%28NASA-med%29.jpg",
+        "alt": "A non-spoiler spiral galaxy wallpaper image",
+        "source_url": "https://commons.wikimedia.org/wiki/File:NGC_4414_(NASA-med).jpg",
+        "license": "public domain"
+      }
+    ]
+  }
+}

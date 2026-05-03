@@ -4,7 +4,22 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
     <meta name="HandheldFriendly" content="True">
-    <title>INASRA Crossword Solver</title>
+    <title>Sample INASRA Hosted Solver</title>
+
+    <script>
+      window.INASRA_SOLVE = {
+        username: "inasra",
+        puzzleId: "xw_example_nonspoiler_001",
+        publicTitle: "Sample INASRA Hosted Puzzle",
+        puzzleUrl: "sample_puzzles/Route_66.ipuz",
+        puzzleType: "ipuz",
+        manifestUrl: "sample_puzzles/inasra-example-manifest.json",
+        theme: "inasra",
+        solverParams: {
+          dark_mode_enabled: true
+        }
+      };
+    </script>
 
     <!-- jQuery -->
     <script src="lib/jquery.js"></script>
@@ -21,17 +36,14 @@
     <!-- Shared JS -->
     <script src="js/crossword.shared.js"></script>
 
-    <!-- INASRA hosted-mode helpers. These are inert unless window.INASRA_SOLVE is present. -->
+    <!-- INASRA hosted-mode helpers -->
     <script src="js/inasra-wallpaper.js"></script>
     <script src="js/inasra-solver-boot.js"></script>
 
     <!-- Shared CSS -->
     <link rel="stylesheet" href="./css/crossword.shared.css">
 
-    <!-- For app downloads -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#111111">
-
+    <meta name="theme-color" content="#050711">
 
     <script>
         const mobile = CrosswordShared.isMobileDevice();
@@ -43,12 +55,10 @@
         });
 
         if (mobile) {
-          // ✅ Load core engine first (crosswords.js)
           const core = document.createElement('script');
           core.src = './js/crosswords.js';
 
           core.onload = () => {
-            // ✅ Then load mobile layout script and CSS
             const link = document.createElement('link');
             link.rel = 'stylesheet';
             link.href = './css/crossword.mobile.css';
@@ -57,7 +67,7 @@
 
             const mobileScript = document.createElement('script');
             mobileScript.src = './js/crossword.mobile.js';
-            document.body.appendChild(mobileScript); // ✅ Let it handle its own init
+            document.body.appendChild(mobileScript);
           };
 
           window.addEventListener('DOMContentLoaded', () => {
@@ -65,14 +75,12 @@
           });
 
         } else {
-          // ✅ Desktop CSS
           const link = document.createElement('link');
           link.rel = 'stylesheet';
           link.href = './css/crosswordnexus.css';
           document.head.appendChild(link);
           window.InasraSolver?.ensureThemeStylesheet?.();
 
-          // ✅ Desktop JS + Init
           const script = document.createElement('script');
           script.src = './js/crosswords.js';
           script.onload = () => {
@@ -106,32 +114,19 @@
         }
       </script>
 
-      <!-- For saving the app locally. INASRA-hosted solve pages skip this to avoid stale puzzle assets. -->
-      <script>
-        const inasraHostedMode = window.InasraSolver?.isHostedMode?.() || CrosswordShared.isInasraHostedMode();
-        if ('serviceWorker' in navigator && !inasraHostedMode) {
-          navigator.serviceWorker.register('sw.js').then(() => {
-            console.log('Service Worker registered!');
-          });
-        } else if (inasraHostedMode) {
-          console.log('[INASRA] Service Worker registration skipped for hosted solve mode.');
-        }
-      </script>
-
       <noscript>
         <p style="padding:1rem; font-family:sans-serif;">
-          The Crossword Nexus Solver requires JavaScript.
+          The INASRA Crossword Solver requires JavaScript.
         </p>
       </noscript>
-
 </head>
 <body>
     <div id="inasra-wallpaper-layer" aria-hidden="true"></div>
     <header class="inasra-solve-topbar" aria-label="INASRA puzzle header">
       <a class="inasra-brand" href="/">INASRA</a>
       <div class="inasra-puzzle-meta">
-        <span id="inasra-puzzle-title">INASRA Crossword</span>
-        <span id="inasra-puzzle-author"></span>
+        <span id="inasra-puzzle-title">Sample INASRA Hosted Puzzle</span>
+        <span id="inasra-puzzle-author">by inasra</span>
       </div>
       <a class="inasra-create-link" href="/">Create your own</a>
     </header>
